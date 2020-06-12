@@ -1,7 +1,7 @@
 package todo
 
-// Store is an interface for storing todo list items.
-type Store interface {
+// Repository is an interface for storing todo list items.
+type Repository interface {
 	// Add adds an item to the store
 	Add(item *Item)
 
@@ -10,9 +10,6 @@ type Store interface {
 
 	// Get retrieves a todo list item from the store
 	Get(title string) *Item
-
-	// GetAll retrieves all items in the store.
-	GetAll() []*Item
 
 	// MarkComplete marks an item in the list complete.
 	MarkComplete(title string)
