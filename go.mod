@@ -1,4 +1,4 @@
-module github.com/chrisdoherty4/go-todo
+module github.com/chrisdoherty4/rememberme
 
 go 1.14
 

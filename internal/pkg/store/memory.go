@@ -3,7 +3,7 @@ package store
 import (
 	"sync"
 
-	"github.com/chrisdoherty4/go-todo/pkg/todo"
+	"github.com/chrisdoherty4/rememberme/internal/pkg/todo"
 )
 
 // MemoryStore is an in memory storage structure for todo list items.
