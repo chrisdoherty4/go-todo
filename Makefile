@@ -1,5 +1,5 @@
 
-APP_NAME = todo-daemon
+APP_NAME = winston
 
 all:
 	@go build -o $(APP_NAME) .
