@@ -1,5 +1,5 @@
 
-APP_NAME = winston
+APP_NAME = rememberme
 
 all:
 	@go build -o $(APP_NAME) .
