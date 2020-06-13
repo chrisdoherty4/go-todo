@@ -1,66 +1,31 @@
 package todo
 
-import "sync"
-
 // Item represents a single todo item.
 type Item struct {
-	title       string
-	description string
-	complete    bool
-	mutex       sync.Mutex
-}
-
-// NewItem creates a new Item instance.
-func NewItem(title string) *Item {
-	return &Item{
-		title: title,
-	}
-}
-
-// Complete retrieves the completion status of the todo item.
-func (t *Item) Complete() bool {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	return t.complete
+	Title       string
+	Description string
+	Complete    bool
 }
 
 // MarkComplete marks the todo item as complete.
 func (t *Item) MarkComplete() {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	t.complete = true
+	t.Complete = true
 }
 
-// Title retrieves the todo title
-func (t *Item) Title() string {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	return t.title
+// NewItem creates a new item.
+// The new item will be initialized with the @title argument and all
+// other values will have their 0 initialization.
+func NewItem(title string) *Item {
+	return &Item{
+		Title: title,
+	}
 }
 
-// Description retrieves the todo description
-func (t *Item) Description() string {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	return t.description
-}
-
-// SetTitle sets the todo item title.
-func (t *Item) SetTitle(title string) {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	t.title = title
-}
-
-// SetDescription sets the todo item description.
-func (t *Item) SetDescription(description string) {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	t.description = description
+// Clone clones an existing todo item into a new memory space.
+func Clone(src *Item) *Item {
+	return &Item{
+		Title:       src.Title,
+		Description: src.Description,
+		Complete:    src.Complete,
+	}
 }

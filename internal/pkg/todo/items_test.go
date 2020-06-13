@@ -7,21 +7,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestItemCreation(t *testing.T) {
-	title := "Grocery shopping"
-	description := `
-		- Apples
-		- Bananas
-		- Pears
-	`
+func TestClone(t *testing.T) {
+	item := &todo.Item{
+		Title: "Walk dog",
+	}
 
-	item := todo.NewItem(title)
-	assert.Equal(t, item.Title(), title, "Title should be equal")
+	c := todo.Clone(item)
 
-	item.SetDescription(description)
-	assert.Equal(t, item.Description(), description, "Description should be equal")
+	assert.True(t, item != c, "Items should have different memory spaces.")
+}
 
-	assert.False(t, item.Complete(), "Item should not be complete")
+func TestMarkComplete(t *testing.T) {
+	item := &todo.Item{
+		Title: "Walk dog",
+	}
+
+	assert.False(t, item.Complete, "Item should be incomplete")
 	item.MarkComplete()
-	assert.True(t, item.Complete(), "Item should be complete")
+	assert.True(t, item.Complete, "Item should be complete")
 }

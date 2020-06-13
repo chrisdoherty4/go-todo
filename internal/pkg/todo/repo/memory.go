@@ -33,7 +33,7 @@ func (t *MemoryRepository) Delete(title string) *todo.Item {
 	defer t.mutex.Unlock()
 
 	for i, item := range t.items {
-		if item.Title() == title {
+		if item.Title == title {
 			t.items[i] = t.items[len(t.items)-1]
 			t.items = t.items[:len(t.items)-1]
 			return item
@@ -51,10 +51,10 @@ func (t *MemoryRepository) Get(title string) *todo.Item {
 	defer t.mutex.Unlock()
 
 	for _, item := range t.items {
-		if item.Title() == title {
+		if item.Title == title {
 			// Return a copy of the item so the caller doesn't try to manipulate
 			// the MemoryStore's copy.
-			return copyItem(item)
+			return todo.Clone(item)
 		}
 	}
 
@@ -68,7 +68,7 @@ func (t *MemoryRepository) MarkComplete(title string) {
 	defer t.mutex.Unlock()
 
 	for _, item := range t.items {
-		if item.Title() == title {
+		if item.Title == title {
 			item.MarkComplete()
 			return
 		}
@@ -81,15 +81,4 @@ func (t *MemoryRepository) Size() int {
 	defer t.mutex.Unlock()
 
 	return len(t.items)
-}
-
-func copyItem(item *todo.Item) *todo.Item {
-	copiedItem := todo.NewItem(item.Title())
-	copiedItem.SetDescription(item.Description())
-
-	if item.Complete() {
-		copiedItem.MarkComplete()
-	}
-
-	return copiedItem
 }

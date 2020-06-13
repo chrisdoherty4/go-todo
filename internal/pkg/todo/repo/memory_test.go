@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/chrisdoherty4/rememberme/internal/pkg/repo"
 	"github.com/chrisdoherty4/rememberme/internal/pkg/todo"
+	"github.com/chrisdoherty4/rememberme/internal/pkg/todo/repo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -43,7 +43,7 @@ func TestMarkItemComplete(t *testing.T) {
 
 	repo.Add(item)
 	repo.MarkComplete(title)
-	assert.True(t, repo.Get(title).Complete(), "Item should have been marked complete")
+	assert.True(t, repo.Get(title).Complete, "Item should have been marked complete")
 }
 
 func TestDeletingItems(t *testing.T) {
@@ -59,8 +59,8 @@ func TestGettingItem(t *testing.T) {
 	repo := repo.NewMemoryRepository()
 
 	description := "Walk the damn dog"
-	item.SetDescription(description)
+	item.Description = description
 	repo.Add(item)
 	retrieved := repo.Get(title)
-	assert.Equal(t, description, retrieved.Description(), fmt.Sprintf("The description should be '%v'", description))
+	assert.Equal(t, description, retrieved.Description, fmt.Sprintf("The description should be '%v'", description))
 }
