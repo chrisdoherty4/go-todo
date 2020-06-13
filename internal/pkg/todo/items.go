@@ -2,9 +2,9 @@ package todo
 
 // Item represents a single todo item.
 type Item struct {
-	Title       string
-	Description string
-	Complete    bool
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Complete    bool   `json:"complete"`
 }
 
 // MarkComplete marks the todo item as complete.
@@ -21,11 +21,16 @@ func NewItem(title string) *Item {
 	}
 }
 
+// Clone clones the instance it's called on.
+func (t *Item) Clone() *Item {
+	return &Item{
+		Title:       t.Title,
+		Description: t.Description,
+		Complete:    t.Complete,
+	}
+}
+
 // Clone clones an existing todo item into a new memory space.
 func Clone(src *Item) *Item {
-	return &Item{
-		Title:       src.Title,
-		Description: src.Description,
-		Complete:    src.Complete,
-	}
+	return src.Clone()
 }
