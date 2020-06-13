@@ -1,41 +1,22 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-
-	"github.com/chrisdoherty4/rememberme/internal/pkg/todo"
+	"net/http"
 )
 
-// import (
-// 	"fmt"
-// 	"log"
-// 	"net/http"
-// )
+var port = 8080
 
-// var port = 8080
-
-// var handlers = map[string]http.Handler{
-// 	"/": rootHandler{},
-// }
-
-// func main() {
-// 	for path, handler := range handlers {
-// 		http.Handle(path, handler)
-// 	}
-
-// 	log.Printf("Starting server on %d", port)
-// 	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
-// }
+var handlers = map[string]http.Handler{
+	"/": rootHandler{},
+}
 
 func main() {
-	item := todo.NewItem("Walk dog")
-
-	marshalled, err := json.Marshal(item)
-	if err != nil {
-		log.Fatal(err)
+	for path, handler := range handlers {
+		http.Handle(path, handler)
 	}
 
-	fmt.Println(string(marshalled))
+	log.Printf("Starting server on %d", port)
+	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }

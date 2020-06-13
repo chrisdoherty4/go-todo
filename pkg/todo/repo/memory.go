@@ -3,7 +3,7 @@ package repo
 import (
 	"sync"
 
-	"github.com/chrisdoherty4/rememberme/internal/pkg/todo"
+	"github.com/chrisdoherty4/rememberme/pkg/todo"
 )
 
 // MemoryRepository is an in memory storage structure for todo list items.
@@ -43,13 +43,6 @@ func (t *MemoryRepository) Delete(title string) *todo.Item {
 	}
 
 	return nil
-}
-
-// Get retrieves a todo MemoryRepository todo. from the MemoryRepository.
-//
-// If the item is not in the repo a nil pointer is returned.
-func (t *MemoryRepository) Get(title string) *todo.Item {
-	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
 	for _, item := range t.items {

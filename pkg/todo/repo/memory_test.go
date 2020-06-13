@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/chrisdoherty4/rememberme/internal/pkg/todo"
-	"github.com/chrisdoherty4/rememberme/internal/pkg/todo/repo"
+	"github.com/chrisdoherty4/rememberme/pkg/todo"
+	"github.com/chrisdoherty4/rememberme/pkg/todo/repo"
 	"github.com/stretchr/testify/assert"
 )
 

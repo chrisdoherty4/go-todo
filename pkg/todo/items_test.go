@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chrisdoherty4/rememberme/internal/pkg/todo"
+	"github.com/chrisdoherty4/rememberme/pkg/todo"
 	"github.com/stretchr/testify/assert"
 )
 
