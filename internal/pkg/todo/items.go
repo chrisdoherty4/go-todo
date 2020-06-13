@@ -2,17 +2,13 @@ package todo
 
 import "time"
 
-type item struct {
-	CreatedAt   time.Time `json:"createdAt"`
-	LastUpdated time.Time `json:"lastUpdated"`
-}
-
 // Item represents a single todo item.
 type Item struct {
-	item
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Complete    bool   `json:"complete"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Complete    bool      `json:"complete"`
+	CreatedAt   time.Time `json:"createdAt"`
+	LastUpdated time.Time `json:"lastUpdated"`
 }
 
 // MarkComplete marks the todo item as complete.
@@ -23,29 +19,17 @@ func (t *Item) MarkComplete() {
 // Clone clones the instance it's called on.
 func (t *Item) Clone() *Item {
 	return &Item{
-		item: item{
-			CreatedAt:   t.item.CreatedAt,
-			LastUpdated: t.item.LastUpdated,
-		},
 		Title:       t.Title,
 		Description: t.Description,
 		Complete:    t.Complete,
+		CreatedAt:   t.CreatedAt,
+		LastUpdated: t.LastUpdated,
 	}
-}
-
-// CreatedAt retrieves the time the item was created at.
-func (t *Item) CreatedAt() time.Time {
-	return t.item.CreatedAt
-}
-
-// LastUpdated retrieves the time the item was last updated.
-func (t *Item) LastUpdated() time.Time {
-	return t.item.LastUpdated
 }
 
 // Touch updates the last updated data for the item instance.
 func (t *Item) Touch() {
-	t.item.LastUpdated = time.Now()
+	t.LastUpdated = time.Now()
 }
 
 // NewItem creates a new item.
@@ -53,11 +37,9 @@ func (t *Item) Touch() {
 // other values will have their 0 initialization.
 func NewItem(title string) *Item {
 	return &Item{
-		item: item{
-			CreatedAt:   time.Now(),
-			LastUpdated: time.Now(),
-		},
-		Title: title,
+		Title:       title,
+		CreatedAt:   time.Now(),
+		LastUpdated: time.Now(),
 	}
 }
 
