@@ -6,6 +6,7 @@ type Repository interface {
 	Save(item *Item)
 
 	// Delete removes an item from the store
+	// The item returned should be the item just deleted.
 	Delete(title string) *Item
 
 	// Get retrieves a todo list item from the store
