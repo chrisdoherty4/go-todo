@@ -2,8 +2,8 @@ package todo
 
 // Repository is an interface for storing todo list items.
 type Repository interface {
-	// Add adds an item to the store
-	Add(item *Item)
+	// Save adds an item to the store
+	Save(item *Item)
 
 	// Delete removes an item from the store
 	Delete(title string) *Item

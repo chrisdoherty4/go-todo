@@ -17,8 +17,8 @@ func NewMemoryRepository() *MemoryRepository {
 	return &MemoryRepository{}
 }
 
-// Add adds a todo item to the MemoryRepository.
-func (t *MemoryRepository) Add(item *todo.Item) {
+// Save adds a todo item to the MemoryRepository.
+func (t *MemoryRepository) Save(item *todo.Item) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
