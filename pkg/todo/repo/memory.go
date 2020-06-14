@@ -12,11 +12,6 @@ type MemoryRepository struct {
 	mutex sync.Mutex
 }
 
-// NewMemoryRepository creates a MemoryRepository instance.
-func NewMemoryRepository() *MemoryRepository {
-	return &MemoryRepository{}
-}
-
 // Save adds a todo item to the MemoryRepository.
 func (t *MemoryRepository) Save(item *todo.Item) {
 	t.mutex.Lock()
@@ -63,6 +58,17 @@ func (t *MemoryRepository) Get(title string) *todo.Item {
 	return nil
 }
 
+// GetAll retrieves all items in the repository.
+func (t *MemoryRepository) GetAll() []*todo.Item {
+	// TODO: Think about this more... the algorithm sucks as it's O(N^2) space
+	// and time. Perhaps the GetAll interface needs changing to a stream based
+	// approach or paging.
+	items := make([]*todo.Item, len(t.items))
+	copy(items, t.items)
+
+	return items
+}
+
 // MarkComplete marks an todo. in the MemoryRepository complete.
 // If the todo. does not exist in the MemoryRepository the call is a noop.
 func (t *MemoryRepository) MarkComplete(title string) {
@@ -84,4 +90,9 @@ func (t *MemoryRepository) Size() int {
 	defer t.mutex.Unlock()
 
 	return len(t.items)
+}
+
+// NewMemoryRepository creates a MemoryRepository instance.
+func NewMemoryRepository() *MemoryRepository {
+	return &MemoryRepository{}
 }
