@@ -2,7 +2,6 @@ package todo_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/chrisdoherty4/rememberme/pkg/todo"
 	"github.com/stretchr/testify/assert"
@@ -28,13 +27,13 @@ func TestMarkComplete(t *testing.T) {
 	assert.True(t, item.Complete, "Item should be complete")
 }
 
-func TestTouch(t *testing.T) {
-	item := todo.NewItem("Walk dog")
+// func TestTouch(t *testing.T) {
+// 	item := todo.NewItem("Walk dog")
 
-	time.Sleep(1 * time.Second)
+// 	time.Sleep(1 * time.Second)
 
-	now := time.Now()
-	item.Touch()
+// 	now := time.Now()
+// 	item.Touch()
 
-	assert.GreaterOrEqual(t, now.Unix(), item.LastUpdated.Unix(), "LastUpdated should be greater than time.Now()")
-}
+// 	assert.GreaterOrEqual(t, now.Unix(), item.LastUpdated.Unix(), "LastUpdated should be greater than time.Now()")
+// }

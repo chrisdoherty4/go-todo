@@ -22,7 +22,7 @@ func (t *MemoryRepository) Save(item *todo.Item) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
-	item.Touch()
+	// item.Touch()
 
 	t.items = append(t.items, item)
 }
@@ -72,7 +72,7 @@ func (t *MemoryRepository) MarkComplete(title string) {
 	for _, item := range t.items {
 		if item.Title == title {
 			item.MarkComplete()
-			item.Touch()
+			// item.Touch()
 			return
 		}
 	}
