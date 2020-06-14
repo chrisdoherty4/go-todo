@@ -71,6 +71,8 @@ func (t *MemoryRepository) GetAll() []*todo.Item {
 
 // MarkComplete marks an todo. in the MemoryRepository complete.
 // If the todo. does not exist in the MemoryRepository the call is a noop.
+//
+// TODO: Remove this, it's not a function of a repository.
 func (t *MemoryRepository) MarkComplete(title string) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
