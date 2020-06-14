@@ -1,21 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"strings"
+
+	"github.com/chrisdoherty4/rememberme/pkg/router"
 )
 
-var port = 8080
+var addr = ":8080"
 
 func main() {
-	log.Printf("Starting server on %d", port)
+	log.Printf("Starting server on %v", strings.Split(addr, ":")[1])
 
-	router := NewRouter()
+	r := router.NewRouter()
 
-	router.HandleInline(GetRoute("/"), func(w http.ResponseWriter, r *http.Request) {
+	r.HandleInline(router.GetRoute("/"), func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("Inline handler"))
 	})
 
-	http.ListenAndServe(fmt.Sprintf(":%d", port), router)
+	http.ListenAndServe(addr, r)
 }
