@@ -5,90 +5,61 @@ import (
 	"net/http"
 )
 
-const (
-	// MethodGet GET
-	MethodGet = "GET"
-
-	// MethodPost POST
-	MethodPost = "POST"
-
-	// MethodPut PUT
-	MethodPut = "PUT"
-
-	// MethodDelete DELETE
-	MethodDelete = "DELETE"
-)
-
-// Route defines
-type Route struct {
-	Method string
-	Path   string
+// RouteHandler binds a Route instance with a Handler.
+type RouteHandler struct {
+	route   *Route
+	handler Handler
 }
 
-// Match is used by the Router to match requests to Routes.
-func (t *Route) Match(r *http.Request) bool {
-	// TODO: Create more sophisticated algorithm for handling path tokens
-	if r.Method != t.Method {
-		return false
-	}
-
-	if r.URL.Path != t.Path {
-		return false
-	}
-
-	return true
+// Route retrieves the route.
+func (t RouteHandler) Route() *Route {
+	return t.route
 }
 
-// NewRoute creates a new Route instance.
-func NewRoute(method, path string) *Route {
-	return &Route{
-		Method: method,
-		Path:   path,
+// Handler retrieves the Handler instance.
+func (t RouteHandler) Handler() Handler {
+	return t.handler
+}
+
+// Match determines if a request matches this RouteHandler instance.
+func (t RouteHandler) Match(r *http.Request) bool {
+	return t.route.Match(r)
+}
+
+// Handle handles a request.
+// The RouteHandler should be matched to a request first by checking
+// RouteHandler.Match(...)
+func (t RouteHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	t.handler.Handle(w, r)
+}
+
+// NewInlineRouteHandler creates a new RouteHandler instance.
+func NewInlineRouteHandler(r *Route, h InlineHandler) *RouteHandler {
+	return &RouteHandler{
+		route: r,
+		handler: &inlineHandlerWrapper{
+			handler: h,
+		},
 	}
 }
 
-// GetRoute creates a new GET method route.
-func GetRoute(path string) *Route {
-	return NewRoute(MethodGet, path)
+// NewRouteHandler creates a new RouteHandler instance.
+func NewRouteHandler(r *Route, h Handler) *RouteHandler {
+	return &RouteHandler{
+		route:   r,
+		handler: h,
+	}
 }
-
-// PostRoute creates a new POST method route.
-func PostRoute(path string) *Route {
-	return NewRoute(MethodPost, path)
-}
-
-// PutRoute creates a new PUT method route.
-func PutRoute(path string) *Route {
-	return NewRoute(MethodPut, path)
-}
-
-// NewDeleteRoute creates a new DELETE method route.
-func NewDeleteRoute(path string) *Route {
-	return NewRoute(MethodDelete, path)
-}
-
-// Handler defines an interface to handle requests.
-type Handler interface {
-	Handle(w http.ResponseWriter, r *http.Request)
-}
-
-// InlineHandler is a type for writing an inline function handler.
-type InlineHandler func(http.ResponseWriter, *http.Request)
 
 // Router dispatches requests to handlers based on route matches.
 type Router struct {
-	routes       map[*Route]Handler
-	inlineRoutes map[*Route]InlineHandler
+	handlers []*RouteHandler
 }
 
 // Handle a route using a predefined handler.
-func (t *Router) Handle(r *Route, h Handler) {
-	t.routes[r] = h
-}
-
-// HandleInline handles a route using an inline handler.
-func (t *Router) HandleInline(r *Route, h InlineHandler) {
-	t.inlineRoutes[r] = h
+func (t *Router) Handle(rh *RouteHandler) {
+	// TODO: Add protection for 1-2-many route-to-handlers.
+	t.handlers = append(t.handlers, rh)
 }
 
 // ServeHTTP handles requests received by the Http server.
@@ -96,18 +67,9 @@ func (t *Router) HandleInline(r *Route, h InlineHandler) {
 func (t *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[%v] %v %v", r.RemoteAddr, r.Method, r.URL.Path)
 
-	// TODO: Add protection for inline handlers and full handlers handling
-	// the same routes.
-	for route, handler := range t.routes {
-		if route.Match(r) {
+	for _, handler := range t.handlers {
+		if handler.Match(r) {
 			handler.Handle(w, r)
-			return
-		}
-	}
-
-	for route, handler := range t.inlineRoutes {
-		if route.Match(r) {
-			handler(w, r)
 			return
 		}
 	}
@@ -117,8 +79,5 @@ func (t *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // NewRouter creates a new Router instance.
 func NewRouter() *Router {
-	return &Router{
-		routes:       make(map[*Route]Handler),
-		inlineRoutes: make(map[*Route]InlineHandler),
-	}
+	return &Router{}
 }
