@@ -91,6 +91,8 @@ func (t *Router) HandleInline(r *Route, h InlineHandler) {
 	t.inlineRoutes[r] = h
 }
 
+// ServeHTTP handles requests received by the Http server.
+// See https://golang.org/pkg/net/http/#Handler
 func (t *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("[%v] %v %v", r.RemoteAddr, r.Method, r.URL.Path)
 
