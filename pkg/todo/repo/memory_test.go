@@ -43,7 +43,7 @@ func TestMarkItemComplete(t *testing.T) {
 
 	repo.Save(item)
 	repo.MarkComplete(title)
-	assert.True(t, repo.Get(title).Complete, "Item should have been marked complete")
+	assert.True(t, repo.Get(title).Complete(), "Item should have been marked complete")
 }
 
 func TestDeletingItems(t *testing.T) {
@@ -59,8 +59,8 @@ func TestGettingItem(t *testing.T) {
 	repo := repo.NewMemoryRepository()
 
 	description := "Walk the damn dog"
-	item.Description = description
+	item.SetDescription(description)
 	repo.Save(item)
 	retrieved := repo.Get(title)
-	assert.Equal(t, description, retrieved.Description, fmt.Sprintf("The description should be '%v'", description))
+	assert.Equal(t, description, retrieved.Description(), fmt.Sprintf("The description should be '%v'", description))
 }

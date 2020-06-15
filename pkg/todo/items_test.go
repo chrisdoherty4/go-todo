@@ -8,9 +8,7 @@ import (
 )
 
 func TestClone(t *testing.T) {
-	item := &todo.Item{
-		Title: "Walk dog",
-	}
+	item := todo.NewItem("Walk dog")
 
 	c := todo.Clone(item)
 
@@ -18,13 +16,11 @@ func TestClone(t *testing.T) {
 }
 
 func TestMarkComplete(t *testing.T) {
-	item := &todo.Item{
-		Title: "Walk dog",
-	}
+	item := todo.NewItem("Walk dog")
 
-	assert.False(t, item.Complete, "Item should be incomplete")
+	assert.False(t, item.Complete(), "Item should be incomplete")
 	item.MarkComplete()
-	assert.True(t, item.Complete, "Item should be complete")
+	assert.True(t, item.Complete(), "Item should be complete")
 }
 
 // func TestTouch(t *testing.T) {
