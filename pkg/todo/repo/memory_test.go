@@ -12,15 +12,36 @@ import (
 var title = "Walk dog"
 var item = todo.NewItem(title)
 
-func TestMemoryRepository(t *testing.T) {
+func TestCreatingAMemoryRepository(t *testing.T) {
 	repo := repo.NewMemoryRepository()
 	assert.Zero(t, repo.Size(), "List should be initialized with 0 items")
 
 	repo.Save(todo.NewItem("Walk dog"))
-	assert.Equal(t, repo.Size(), 1, "List should have 1 item in")
+	assert.Equal(t, 1, repo.Size(), "List should have 1 item in")
 }
 
-func TestSaveMultipleItems(t *testing.T) {
+func TestSavingAnItem(t *testing.T) {
+	repo := repo.NewMemoryRepository()
+
+	repo.Save(item)
+	retrieved := repo.Get(title)
+
+	assert.Equal(t, item.Title(), retrieved.Title(), "Titles should be the same")
+
+	description := "Walk the dog around the block"
+	retrieved.SetDescription(description)
+	repo.Save(retrieved)
+	retrieved = repo.Get(title)
+
+	assert.Equal(
+		t,
+		description,
+		retrieved.Description(),
+		"The descriptions should be the same",
+	)
+}
+
+func TestSavingMultipleItems(t *testing.T) {
 	items := []struct {
 		title string
 	}{
@@ -34,16 +55,13 @@ func TestSaveMultipleItems(t *testing.T) {
 	for i, data := range items {
 		item := todo.NewItem(data.title)
 		repo.Save(item)
-		assert.Equal(t, repo.Size(), i+1, fmt.Sprintf("Repository should have size %d", i+1))
+		assert.Equal(
+			t,
+			i+1,
+			repo.Size(),
+			fmt.Sprintf("Repository should have size %d", i+1),
+		)
 	}
-}
-
-func TestMarkItemComplete(t *testing.T) {
-	repo := repo.NewMemoryRepository()
-
-	repo.Save(item)
-	repo.MarkComplete(title)
-	assert.True(t, repo.Get(title).Complete(), "Item should have been marked complete")
 }
 
 func TestDeletingItems(t *testing.T) {
@@ -58,9 +76,14 @@ func TestDeletingItems(t *testing.T) {
 func TestGettingItem(t *testing.T) {
 	repo := repo.NewMemoryRepository()
 
-	description := "Walk the damn dog"
-	item.SetDescription(description)
 	repo.Save(item)
+
 	retrieved := repo.Get(title)
-	assert.Equal(t, description, retrieved.Description(), fmt.Sprintf("The description should be '%v'", description))
+
+	assert.Equal(
+		t,
+		title,
+		retrieved.Title(),
+		fmt.Sprintf("The title should be '%v'", title),
+	)
 }

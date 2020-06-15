@@ -13,13 +13,18 @@ type MemoryRepository struct {
 }
 
 // Save adds a todo item to the MemoryRepository.
-func (t *MemoryRepository) Save(item *todo.Item) {
+func (t *MemoryRepository) Save(source *todo.Item) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
-	// item.Touch()
+	target := t.find(source.Title())
 
-	t.items = append(t.items, item)
+	if target != nil {
+		update(target, source)
+		return
+	}
+
+	t.items = append(t.items, source.Clone())
 }
 
 // Delete removes a todo item from the MemoryRepository.
@@ -47,12 +52,10 @@ func (t *MemoryRepository) Get(title string) *todo.Item {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
-	for _, item := range t.items {
-		if item.Title() == title {
-			// Return a copy of the item so the caller doesn't try to manipulate
-			// the MemoryStore's copy.
-			return todo.Clone(item)
-		}
+	item := t.find(title)
+
+	if item != nil {
+		return item.Clone()
 	}
 
 	return nil
@@ -69,23 +72,6 @@ func (t *MemoryRepository) GetAll() []*todo.Item {
 	return items
 }
 
-// MarkComplete marks an todo. in the MemoryRepository complete.
-// If the todo. does not exist in the MemoryRepository the call is a noop.
-//
-// TODO: Remove this, it's not a function of a repository.
-func (t *MemoryRepository) MarkComplete(title string) {
-	t.mutex.Lock()
-	defer t.mutex.Unlock()
-
-	for _, item := range t.items {
-		if item.Title() == title {
-			item.MarkComplete()
-			// item.Touch()
-			return
-		}
-	}
-}
-
 // Size retrieves the total number of todo.s in the MemoryRepository.
 func (t *MemoryRepository) Size() int {
 	t.mutex.Lock()
@@ -94,7 +80,27 @@ func (t *MemoryRepository) Size() int {
 	return len(t.items)
 }
 
+func (t *MemoryRepository) find(title string) *todo.Item {
+	for _, item := range t.items {
+		if item.Title() == title {
+			// Return a copy of the item so the caller doesn't try to manipulate
+			// the MemoryStore's copy.
+			return item
+		}
+	}
+
+	return nil
+}
+
 // NewMemoryRepository creates a MemoryRepository instance.
 func NewMemoryRepository() *MemoryRepository {
 	return &MemoryRepository{}
+}
+
+func update(target, source *todo.Item) {
+	target.SetDescription(source.Description())
+
+	if source.Complete() {
+		target.MarkComplete()
+	}
 }

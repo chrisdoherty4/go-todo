@@ -15,9 +15,6 @@ type Repository interface {
 	// GetAll retrieves all items in the repository.
 	GetAll() []*Item
 
-	// MarkComplete marks an item in the list complete.
-	MarkComplete(title string)
-
 	// Size retrieves the total number of items in the repository.
 	Size() int
 }
