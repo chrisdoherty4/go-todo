@@ -1,6 +1,3 @@
-/*
-Package route contains helper functions for creating router.Route instances
-*/
 package route
 
 import "github.com/chrisdoherty4/rememberme/pkg/router"

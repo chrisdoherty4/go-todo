@@ -26,8 +26,11 @@ func main() {
 
 	r := router.NewRouter()
 
+	rg := route.NewGroup()
+	rg.SetPathPrefix("/api/v1")
+
 	r.Handle(router.NewRouteHandler(
-		route.Get("/"),
+		rg.Get("/items"),
 		newListItemsHandler(store),
 	))
 
