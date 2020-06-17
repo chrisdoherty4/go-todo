@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/chrisdoherty4/rememberme/pkg/router"
+	"github.com/chrisdoherty4/rememberme/pkg/router/route"
 	"github.com/chrisdoherty4/rememberme/pkg/todo"
 )
 
@@ -13,6 +15,7 @@ type listItemsHandler struct {
 
 func (t listItemsHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	items, err := json.MarshalIndent(t.repo.GetAll(), "", "  ")
+
 	if err != nil {
 		http.Error(w, "Could not marshal todo items as json", 500)
 	}
@@ -24,4 +27,14 @@ func newListItemsHandler(repo todo.Repository) *listItemsHandler {
 	return &listItemsHandler{
 		repo: repo,
 	}
+}
+
+func configureHandlers(r *router.Router) {
+	root := route.NewGroup()
+	root.SetPathPrefix("/api/v1")
+
+	r.Handle(router.NewRouteHandler(
+		root.Get("/items"),
+		newListItemsHandler(store),
+	))
 }
