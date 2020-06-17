@@ -11,6 +11,7 @@ import (
 	"github.com/chrisdoherty4/rememberme/pkg/todo/repo"
 )
 
+var host = ""
 var addr = ":8080"
 
 var store = repo.NewMemoryRepository()
@@ -22,7 +23,7 @@ func init() {
 }
 
 func main() {
-	log.Printf("Starting server on %v", strings.Split(addr, ":")[1])
+	log.Printf("Server listening at %v", strings.Split(addr, ":")[1])
 
 	r := router.NewRouter()
 
@@ -34,5 +35,5 @@ func main() {
 		newListItemsHandler(store),
 	))
 
-	http.ListenAndServe(addr, r)
+	log.Fatal(http.ListenAndServe(addr, r))
 }
