@@ -51,6 +51,11 @@ func NewRouteHandler(r *Route, h Handler) *RouteHandler {
 	}
 }
 
+// Routable defines an interface for the Router to route requests through.
+type Routable interface {
+	Route(http.ResponseWriter, *http.Request)
+}
+
 // Router dispatches requests to handlers based on route matches.
 type Router struct {
 	handlers []*RouteHandler

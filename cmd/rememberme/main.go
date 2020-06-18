@@ -20,3 +20,13 @@ func main() {
 
 	log.Fatal(http.ListenAndServe(addr, r))
 }
+
+func configureHandlers(r *router.Router) {
+	root := route.NewGroup()
+	root.SetPathPrefix("/api/v1")
+
+	r.Handle(router.NewRouteHandler(
+		root.Get("/items"),
+		newListItemsHandler(store),
+	))
+}

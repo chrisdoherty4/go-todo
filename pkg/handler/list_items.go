@@ -1,11 +1,9 @@
-package main
+package handler
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/chrisdoherty4/rememberme/pkg/router"
-	"github.com/chrisdoherty4/rememberme/pkg/router/route"
 	"github.com/chrisdoherty4/rememberme/pkg/todo"
 )
 
@@ -27,14 +25,4 @@ func newListItemsHandler(repo todo.Repository) *listItemsHandler {
 	return &listItemsHandler{
 		repo: repo,
 	}
-}
-
-func configureHandlers(r *router.Router) {
-	root := route.NewGroup()
-	root.SetPathPrefix("/api/v1")
-
-	r.Handle(router.NewRouteHandler(
-		root.Get("/items"),
-		newListItemsHandler(store),
-	))
 }
