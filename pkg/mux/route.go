@@ -33,26 +33,6 @@ func (r Route) Equal(e *Route) bool {
 	return r.method == e.path && r.path == e.path
 }
 
-// // Get creates a new router.MethodGet Route using the group attributes.
-// func (r Route) Get(path string) *Route {
-// 	return g.NewRoute(MethodGet, path)
-// }
-
-// // Post creates a new router.MethodPost Route using the group attributes
-// func (r Route) Post(path string) *Route {
-// 	return g.NewRoute(MethodPost, path)
-// }
-
-// // Put creates a new router.MethodPut Route using the group attributes
-// func (r Route) Put(path string) *Route {
-// 	return r.NewRoute(MethodPut, path)
-// }
-
-// // Delete creates a new router.MethodDelete Route using the group attributes
-// func (r Route) Delete(path string) *Route {
-// 	return r.NewRoute(MethodDelete, path)
-// }
-
 // Match is used by the Router to match requests to Routes.
 func (r Route) Match(request *http.Request) bool {
 	// TODO: Create more sophisticated algorithm for handling path tokens

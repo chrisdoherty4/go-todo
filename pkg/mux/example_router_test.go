@@ -41,9 +41,15 @@ func ExampleRouter_Delete() {
 func ExampleRouter_Group() {
 	r := mux.NewRouter()
 
+	// Create a new RouteGroup instance and bundle the configurations
+	// in the anonymous function. The function adheres to the RouteGroupFunc
+	// type.
 	r.Group("/example", func(g *mux.RouteGroup) {
+
+		// Define routes that are prefixed with the route group /example path.
 		g.Get("/", mux.NewInlineHandler(
 			func(_ http.ResponseWriter, _ *http.Request) {},
 		))
+
 	})
 }

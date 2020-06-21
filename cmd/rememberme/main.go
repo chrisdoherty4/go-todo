@@ -9,7 +9,7 @@ import (
 	"github.com/chrisdoherty4/rememberme/pkg/mux"
 )
 
-var host = ""
+var host = "localhost"
 var port = 8080
 var addr = fmt.Sprintf("%v:%v", host, port)
 
