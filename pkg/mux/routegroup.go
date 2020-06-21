@@ -62,10 +62,13 @@ func (g *RouteGroup) Delete(path string, handler Handler) *Route {
 // Group creates a clone of this RouteGroup instance appending the path
 // argument to it's path prefix. The clone is then injected into the
 // RouteGroupFunc.
-func (g *RouteGroup) Group(path string, f RouteGroupFunc) {
+func (g *RouteGroup) Group(path string, f RouteGroupFunc) *RouteGroup {
 	routeGroup := g.Clone()
 	routeGroup.SetPathPrefix(fmt.Sprintf("%v/%v", routeGroup.PathPrefix(), path))
+
 	f(routeGroup)
+
+	return routeGroup
 }
 
 // NewRouteGroup creates a new Group instance.

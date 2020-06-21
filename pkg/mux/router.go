@@ -75,10 +75,13 @@ func (r Router) RouteFromPath(path string) []*Route {
 
 // Group creates a new RouteGroup that will register routes with this Route
 // instance.
-func (r *Router) Group(path string, f RouteGroupFunc) {
+func (r *Router) Group(path string, f RouteGroupFunc) *RouteGroup {
 	routeGroup := NewRouteGroup(path, r)
 	routeGroup.SetPathPrefix(path)
+
 	f(routeGroup)
+
+	return routeGroup
 }
 
 // NewRouter creates a new Router instance.
