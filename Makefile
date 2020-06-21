@@ -1,12 +1,13 @@
 
-APP_NAME = rememberme
+PKG_PATH := ./cmd/rememberme
+BIN_NAME := rememberme
 
 all:
-	@go build -o $(APP_NAME) .
+	@go build -o $(BIN_NAME) $(PKG_PATH)
 
 .PHONY: clean
 clean: 
-	@rm $(APP_NAME)
+	@rm -f $(APP_NAME)
 
 .PHONY: serve
 serve:

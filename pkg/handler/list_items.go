@@ -7,11 +7,13 @@ import (
 	"github.com/chrisdoherty4/rememberme/pkg/todo"
 )
 
-type listItemsHandler struct {
+// ListItemsHandler is a handler for listing all items in a todo repository.
+type ListItemsHandler struct {
 	repo todo.Repository
 }
 
-func (t listItemsHandler) Handle(w http.ResponseWriter, r *http.Request) {
+// Handle lists all items in the todo repository.
+func (t ListItemsHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	items, err := json.MarshalIndent(t.repo.GetAll(), "", "  ")
 
 	if err != nil {
@@ -21,8 +23,9 @@ func (t listItemsHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(items))
 }
 
-func newListItemsHandler(repo todo.Repository) *listItemsHandler {
-	return &listItemsHandler{
+// NewListItemsHandler creates a new ListItemsHandler instance.
+func NewListItemsHandler(repo todo.Repository) *ListItemsHandler {
+	return &ListItemsHandler{
 		repo: repo,
 	}
 }

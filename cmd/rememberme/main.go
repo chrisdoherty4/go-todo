@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chrisdoherty4/rememberme/pkg/router"
+	"github.com/chrisdoherty4/rememberme/pkg/handler"
+	"github.com/chrisdoherty4/rememberme/pkg/mux"
 )
 
 var host = ""
@@ -15,18 +16,16 @@ var addr = fmt.Sprintf("%v:%v", host, port)
 func main() {
 	log.Printf("Server listening at %v", addr)
 
-	r := router.NewRouter()
+	r := mux.NewRouter()
 	configureHandlers(r)
 
 	log.Fatal(http.ListenAndServe(addr, r))
 }
 
-func configureHandlers(r *router.Router) {
-	root := route.NewGroup()
-	root.SetPathPrefix("/api/v1")
+func configureHandlers(r *mux.Router) {
+	r.Group("/items", func(rg *mux.RouteGroup) {
 
-	r.Handle(router.NewRouteHandler(
-		root.Get("/items"),
-		newListItemsHandler(store),
-	))
+		rg.Get("/", handler.NewListItemsHandler(store))
+
+	})
 }
