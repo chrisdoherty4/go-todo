@@ -12,3 +12,7 @@ clean:
 .PHONY: serve
 serve:
 	@$(PWD)/$(APP_NAME)
+
+.PHONY: test
+test:
+	@go test -v ./...

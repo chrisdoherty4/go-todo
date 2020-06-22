@@ -23,7 +23,7 @@ func TestGroupWithSlashPrefix(t *testing.T) {
 
 	group.Group("/", func(rg *mux.RouteGroup) {
 		rg.Get("/example", mux.NewInlineHandler(
-			func(_ http.ResponseWriter, _ *http.Request) {},
+			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {},
 		))
 	})
 
@@ -40,7 +40,7 @@ func TestGroupWithWordPrefix(t *testing.T) {
 
 	group.Group("/example", func(rg *mux.RouteGroup) {
 		rg.Get("/", mux.NewInlineHandler(
-			func(_ http.ResponseWriter, _ *http.Request) {},
+			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {},
 		))
 	})
 

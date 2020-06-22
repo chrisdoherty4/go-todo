@@ -1,7 +1,6 @@
 package mux
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 )
@@ -64,7 +63,6 @@ func (r Router) RouteFromPath(path string) []*Route {
 	var routes []*Route
 
 	for _, route := range r.routes {
-		fmt.Println(route)
 		if route.Path() == path {
 			routes = append(routes, route)
 		}
