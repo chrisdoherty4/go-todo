@@ -7,11 +7,17 @@ import (
 )
 
 func configureHandlers(r *mux.Router) {
-	r.Group("/items", func(rg *mux.RouteGroup) {
+	r.Group("^/items", func(rg *mux.RouteGroup) {
 
 		rg.Get("/", mux.NewInlineHandler(
-			func(w http.ResponseWriter, r *http.Request, rm *mux.RouteMatch) {
-				itemController.List(w, r, rm)
+			func(w http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
+				itemController.List(w)
+			},
+		))
+
+		rg.Get("/([A-Za-z-]+)$", mux.NewInlineHandler(
+			func(w http.ResponseWriter, _ *http.Request, rm *mux.RouteMatch) {
+				itemController.Show(w, rm)
 			},
 		))
 

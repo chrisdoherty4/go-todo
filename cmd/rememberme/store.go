@@ -8,7 +8,7 @@ import (
 var store = repo.NewMemoryRepository()
 
 func init() {
-	store.Save(todo.NewItem("Walk dog"))
+	store.Save(todo.NewItem("WalkDog"))
 	store.Save(todo.NewItem("Walk cat"))
 	store.Save(todo.NewItem("Walk crocodile"))
 }
