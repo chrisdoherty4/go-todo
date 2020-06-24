@@ -25,7 +25,7 @@ type item struct {
 
 // Item represents a single todo item.
 type Item struct {
-	*item
+	item
 }
 
 // MarkComplete marks the todo item as complete.
@@ -36,7 +36,7 @@ func (t *Item) MarkComplete() {
 // Clone clones the instance it's called on.
 func (t Item) Clone() *Item {
 	return &Item{
-		item: &item{
+		item: item{
 			Title:       t.Title(),
 			Description: t.Description(),
 			Complete:    t.Complete(),
@@ -84,7 +84,7 @@ func Clone(src *Item) *Item {
 // other values will have their 0 initialization.
 func NewItem(title string) *Item {
 	return &Item{
-		item: &item{
+		item: item{
 			Title: title,
 		},
 	}

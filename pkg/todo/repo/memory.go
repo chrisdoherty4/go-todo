@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/chrisdoherty4/rememberme/pkg/todo"
@@ -30,7 +31,7 @@ func (t *MemoryRepository) Save(source *todo.Item) {
 // Delete removes a todo item from the MemoryRepository.
 //
 // If the item is not in the repo a nil pointer is returned.
-func (t *MemoryRepository) Delete(title string) *todo.Item {
+func (t *MemoryRepository) Delete(title string) (todo.Item, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
@@ -38,38 +39,43 @@ func (t *MemoryRepository) Delete(title string) *todo.Item {
 		if item.Title() == title {
 			t.items[i] = t.items[len(t.items)-1]
 			t.items = t.items[:len(t.items)-1]
-			return item
+			return *item, nil
 		}
 	}
 
-	return nil
+	var item todo.Item
+	return item, fmt.Errorf("Item not found (%v)", title)
 }
 
 // Get retrieves a todo MemoryRepository todo. from the MemoryRepository.
 //
 // If the item is not in the repo a nil pointer is returned.
-func (t *MemoryRepository) Get(title string) *todo.Item {
+func (t *MemoryRepository) Get(title string) (todo.Item, error) {
 	t.mutex.Lock()
 	defer t.mutex.Unlock()
 
 	item := t.find(title)
 
-	if item != nil {
-		return item.Clone()
+	if item == nil {
+		var item todo.Item
+		return item, fmt.Errorf("Item not found (%v)", title)
 	}
 
-	return nil
+	return *item, nil
 }
 
-// GetAll retrieves all items in the repository.
-func (t *MemoryRepository) GetAll() []*todo.Item {
-	// TODO: Think about this more... the algorithm sucks as it's O(N^2) space
-	// and time. Perhaps the GetAll interface needs changing to a stream based
-	// approach or paging.
-	items := make([]*todo.Item, len(t.items))
-	copy(items, t.items)
+// GetAll will concurrently dispatch all items to a channel.
+func (t *MemoryRepository) GetAll() <-chan todo.Item {
+	output := make(chan todo.Item)
 
-	return items
+	go func() {
+		defer close(output)
+		for _, item := range t.items {
+			output <- *item
+		}
+	}()
+
+	return output
 }
 
 // Size retrieves the total number of todo.s in the MemoryRepository.
