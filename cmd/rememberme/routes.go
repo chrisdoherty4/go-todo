@@ -7,7 +7,7 @@ import (
 )
 
 func configureHandlers(r *mux.Router) {
-	r.Group("/items", func(rg *mux.RouteGroup) {
+	r.Group("/items", func(rg mux.RouteFactory) {
 
 		rg.Get("/", mux.NewInlineHandler(
 			func(w http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
