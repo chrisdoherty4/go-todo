@@ -14,7 +14,7 @@ type ItemController struct {
 }
 
 // List lists all items in the todo repository.
-func (ic ItemController) List(w http.ResponseWriter) {
+func (ic ItemController) List(w http.ResponseWriter, _ *http.Request, rm *mux.RouteMatch) {
 	items, err := json.MarshalIndent(ic.repo.GetAll(), "", "  ")
 
 	if err != nil {
@@ -25,7 +25,7 @@ func (ic ItemController) List(w http.ResponseWriter) {
 }
 
 // Show retrieves a single item from the repository and returns it as json.
-func (ic ItemController) Show(w http.ResponseWriter, rm *mux.RouteMatch) {
+func (ic ItemController) Show(w http.ResponseWriter, _ *http.Request, rm *mux.RouteMatch) {
 	title, _ := rm.Var(0)
 
 	item, err := json.MarshalIndent(ic.repo.Get(title), "", "  ")
