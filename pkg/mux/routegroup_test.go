@@ -1,97 +1,123 @@
 package mux_test
 
 import (
-	"io/ioutil"
 	"net/http"
-	"net/http/httptest"
-	"net/url"
-	"strings"
 	"testing"
 
 	"github.com/chrisdoherty4/rememberme/pkg/mux"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewRouteGroup(t *testing.T) {
-	router := mux.NewRouter()
-
+func TestGroupWithPathPrefix(t *testing.T) {
 	prefix := "/example"
-	group := mux.NewRouteGroup(prefix, router)
-
+	group := mux.NewRouteGroup(prefix, mux.NewRouter())
 	assert.Equal(t, prefix, group.PathPrefix())
 }
 
 func TestGroupWithSlashPrefix(t *testing.T) {
-	router := mux.NewRouter()
-	group := mux.NewRouteGroup("/", router)
+	r := mux.NewRouter()
+	g := mux.NewRouteGroup("/", r)
 
-	group.Group("/", func(rg *mux.RouteGroup) {
-		rg.Get("/example", mux.NewInlineHandler(
+	var expected *mux.Route
+
+	g.Group("/", func(rf mux.RouteFactory) {
+		expected = rf.Get("/example", mux.NewInlineHandler(
 			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {},
 		))
 	})
 
-	assert.Equal(t, 1, router.Count())
+	assert.Equal(t, 1, r.Count())
 
-	routes := router.RouteFromPath("/example")
+	request, err := http.NewRequest(http.MethodGet, "/example", nil)
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
 
-	assert.Equal(t, 1, len(routes))
+	found := r.FindRoute(request)
+
+	assert.NotNil(t, found)
+	assert.True(t, found.Equal(expected))
 }
 
 func TestGroupWithWordPrefix(t *testing.T) {
-	router := mux.NewRouter()
-	group := mux.NewRouteGroup("/", router)
+	r := mux.NewRouter()
+	g := mux.NewRouteGroup("/", r)
 
-	group.Group("/example", func(rg *mux.RouteGroup) {
-		rg.Get("/", mux.NewInlineHandler(
+	var expected *mux.Route
+
+	g.Group("/example", func(rf mux.RouteFactory) {
+		expected = rf.Get("/", mux.NewInlineHandler(
 			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {},
 		))
 	})
 
-	assert.Equal(t, 1, router.Count())
+	assert.Equal(t, 1, r.Count())
 
-	routes := router.RouteFromPath("/example")
+	request, err := http.NewRequest(http.MethodGet, "/example", nil)
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
 
-	assert.Equal(t, 1, len(routes))
+	found := r.FindRoute(request)
+
+	assert.NotNil(t, found)
+	assert.True(t, found.Equal(expected))
 }
 
 func TestGroupWithSimilarPaths(t *testing.T) {
-	var (
-		items              string = "items"
-		itemsWithPathParam string = "itemsWithPathParam"
-	)
+	var expected *mux.Route
 
-	r.Group("/items", func(rg *mux.RouteGroup) {
+	r := mux.NewRouter()
+	g := mux.NewRouteGroup("/", r)
 
-		rg.Get("/", mux.NewInlineHandler(
-			func(w http.ResponseWriter, r *http.Request, _ *mux.RouteMatch) {
-				t.Log("Received request for /items")
-				w.Write([]byte(items))
+	g.Group("/example", func(rf mux.RouteFactory) {
+
+		rf.Get("/", mux.NewInlineHandler(
+			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
+				t.Log("Received request for /example")
 			},
 		))
 
-		rg.Get("/([A-Za-z-]+)", mux.NewInlineHandler(
-			func(w http.ResponseWriter, r *http.Request, _ *mux.RouteMatch) {
-				t.Log("Received request for /items/([A-Za-z-]+)")
-				w.Write([]byte(itemsWithPathParam))
+		expected = rf.Get("/([A-Za-z-]+)", mux.NewInlineHandler(
+			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
+				t.Log("Received request for /example/([A-Za-z-])")
 			},
 		))
 
 	})
 
-	server := httptest.NewServer(r)
-	defer server.Close()
+	request, err := http.NewRequest(http.MethodGet, "/example/param", nil)
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
 
-	client := server.Client()
+	found := r.FindRoute(request)
 
-	testUrl, _ := newUrl(server.URL, "items", "walk-dog")
-	response, _ := client.Get(testUrl.String())
-	body, _ := ioutil.ReadAll(response.Body)
-
-	t.Log("Body received was", string(body))
-	assert.Equal(t, itemsWithPathParam, string(body))
+	assert.NotNil(t, found)
+	assert.True(t, found.Equal(expected))
 }
 
-func newUrl(parts ...string) (*url.URL, error) {
-	return url.Parse(strings.Join(parts, "/"))
+func TestPathTokenExtraction(t *testing.T) {
+
+}
+
+func TestRequestPathWithTrailingSlash(t *testing.T) {
+	r := mux.NewRouter()
+	g := mux.NewRouteGroup("/", r)
+
+	expected := g.Get("/example", mux.NewInlineHandler(
+		func(w http.ResponseWriter, r *http.Request, _ *mux.RouteMatch) {
+			t.Log("Received request for /example")
+		},
+	))
+
+	request, err := http.NewRequest(http.MethodGet, "/example/", nil)
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	found := r.FindRoute(request)
+
+	assert.NotNil(t, found)
+	assert.True(t, expected.Equal(found))
 }

@@ -15,11 +15,9 @@ type Router struct {
 func (r *Router) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	log.Printf("[%v] %v %v", request.RemoteAddr, request.Method, request.URL.Path)
 
-	for _, route := range r.routes {
-		if route.Match(request) {
-			route.Handle(w, request)
-			return
-		}
+	route := r.FindRoute(request)
+	if route == nil {
+		route.Handle(w, request)
 	}
 
 	// Make this customizable
@@ -58,22 +56,20 @@ func (r Router) Count() int {
 	return len(r.routes)
 }
 
-// RouteFromPath retrieves all routes that match the path argument.
-func (r Router) RouteFromPath(path string) []*Route {
-	var routes []*Route
-
+// FindRoute retrieves a route from the router that matches a request.
+func (r Router) FindRoute(request *http.Request) *Route {
 	for _, route := range r.routes {
-		if route.Path() == path {
-			routes = append(routes, route)
+		if route.Match(request) {
+			return route
 		}
 	}
 
-	return routes
+	return nil
 }
 
 // Group creates a new RouteGroup that will register routes with this Route
 // instance.
-func (r *Router) Group(path string, f RouteGroupFunc) *RouteGroup {
+func (r *Router) Group(path string, f RouteFactoryFunc) RouteFactory {
 	routeGroup := NewRouteGroup(path, r)
 	routeGroup.SetPathPrefix(path)
 

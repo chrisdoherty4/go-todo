@@ -1,15 +1,17 @@
 package mux
 
+import "net/http"
+
 const (
 	// MethodGet GET
-	MethodGet = "GET"
+	MethodGet = http.MethodGet
 
 	// MethodPost POST
-	MethodPost = "POST"
+	MethodPost = http.MethodPost
 
 	// MethodPut PUT
-	MethodPut = "PUT"
+	MethodPut = http.MethodPut
 
 	// MethodDelete DELETE
-	MethodDelete = "DELETE"
+	MethodDelete = http.MethodDelete
 )

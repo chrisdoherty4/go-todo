@@ -1,8 +1,8 @@
 package mux
 
-// RouteGroupFunc is an interface to bundle related routes under shared
+// RouteFactoryFunc is an interface to bundle related routes under shared
 // route settings.
-type RouteGroupFunc func(*RouteGroup)
+type RouteFactoryFunc func(RouteFactory)
 
 // RouteFactory creates routes.
 type RouteFactory interface {
@@ -14,5 +14,5 @@ type RouteFactory interface {
 
 	Delete(string, Handler) *Route
 
-	Group(string, RouteGroupFunc) *RouteGroup
+	Group(string, RouteFactoryFunc) RouteFactory
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"regexp"
+	"strings"
 )
 
 // Route defines
@@ -33,21 +34,17 @@ func (r *Route) Handler() Handler {
 // equal. Route instances are equal if the method and path of each route
 // are equal.
 func (r Route) Equal(e *Route) bool {
-	return r.method == e.path && r.path == e.path
+	return r.method == e.method && r.path == e.path
 }
 
 // Match is used by the Router to match requests to Routes.
 func (r Route) Match(request *http.Request) bool {
-	// TODO: Create more sophisticated algorithm for handling path tokens
-	if r.method != request.Method {
-		return false
+	if r.method == request.Method &&
+		r.compiledPath.MatchString(request.URL.Path) {
+		return true
 	}
 
-	if !r.compiledPath.MatchString(request.URL.Path) {
-		return false
-	}
-
-	return true
+	return false
 }
 
 // Handle is used by a Router to route a request to the Route's handler.
@@ -63,6 +60,26 @@ func (r *Route) Handle(writer http.ResponseWriter, request *http.Request) {
 
 // NewRoute creates a new Route instance.
 func NewRoute(method, path string, h Handler) *Route {
+	if path == "" {
+		return nil
+	}
+
+	// We need a full string match. The `regexp` package doesn't provide a
+	// function to do a full string match so we need to ensure we specify
+	// a full string match when we're constructing the path.
+	var builder strings.Builder
+
+	if path[0] != '^' {
+		builder.WriteByte('^')
+	}
+
+	// Ensure trailing slashes are optionally matched and that we close off
+	// the path regex with a $.
+	builder.WriteString(strings.TrimRight(path, "/$"))
+	builder.WriteString("/?$")
+
+	path = builder.String()
+
 	return &Route{
 		method:       method,
 		path:         path,
@@ -71,33 +88,33 @@ func NewRoute(method, path string, h Handler) *Route {
 	}
 }
 
-// RouteMatch wraps a Route and all tokens extracted from the Path.
+// RouteMatch is used as an output of matching
 type RouteMatch struct {
 	Route   *Route
 	Request *http.Request
-	matches []string
+	vars    []string
 }
 
 // Var retrieves a matched variable from the request path at the specified
 // index.
-func (rm RouteMatch) Var(idx int) (string, error) {
-	if idx >= len(rm.matches) {
+func (rm *RouteMatch) Var(idx int) (string, error) {
+	if idx >= len(rm.vars) {
 		return "", errors.New("Index out of bounds")
 	}
 
-	return rm.matches[idx], nil
+	return rm.vars[idx], nil
 }
 
 // Count returns the total number of matches made against the
-func (rm RouteMatch) Count() int {
-	return len(rm.matches)
+func (rm *RouteMatch) Count() int {
+	return len(rm.vars)
 }
 
 // NewRouteMatch creates a new RouteMatch instance.
-func NewRouteMatch(r *Route, request *http.Request, m []string) *RouteMatch {
+func NewRouteMatch(r *Route, request *http.Request, v []string) *RouteMatch {
 	return &RouteMatch{
 		Route:   r,
 		Request: request,
-		matches: m,
+		vars:    v,
 	}
 }
