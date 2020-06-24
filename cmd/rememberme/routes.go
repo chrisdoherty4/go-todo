@@ -7,7 +7,7 @@ import (
 )
 
 func configureHandlers(r *mux.Router) {
-	r.Group("^/items", func(rg *mux.RouteGroup) {
+	r.Group("/items", func(rg *mux.RouteGroup) {
 
 		rg.Get("/", mux.NewInlineHandler(
 			func(w http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
@@ -15,7 +15,7 @@ func configureHandlers(r *mux.Router) {
 			},
 		))
 
-		rg.Get("/([A-Za-z-]+)$", mux.NewInlineHandler(
+		rg.Get("/([A-Za-z-]+)", mux.NewInlineHandler(
 			func(w http.ResponseWriter, _ *http.Request, rm *mux.RouteMatch) {
 				itemController.Show(w, rm)
 			},
