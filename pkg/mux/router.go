@@ -16,8 +16,10 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	log.Printf("[%v] %v %v", request.RemoteAddr, request.Method, request.URL.Path)
 
 	route := r.FindRoute(request)
-	if route == nil {
+
+	if route != nil {
 		route.Handle(w, request)
+		return
 	}
 
 	// Make this customizable

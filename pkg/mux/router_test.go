@@ -16,7 +16,7 @@ func TestServeingRequests(t *testing.T) {
 	r := mux.NewRouter()
 
 	r.Get("/example", mux.NewInlineHandler(
-		func(w http.ResponseWriter, r *http.Request, _ *mux.RouteMatch) {
+		func(w http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
 			t.Log("Received request for /example")
 			w.Write([]byte(expected))
 		},
