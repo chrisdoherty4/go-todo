@@ -125,19 +125,11 @@ The CLI tool should be capable of listing, creating, marking complete and deleti
 
 ### List items
 
-    todo list [-a]
-
-##### Options
-
-    -a : List all items, complete and incomplete.
-
-### List specific item.
-
-    todo list <title>
+    todo list [<title>]
 
 ##### Arguments
 
-    <title> : A unique title for the new todo item.
+    <title> : [Optional] A title of an existing todo item.
 
 ### Create item
  
