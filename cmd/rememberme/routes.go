@@ -12,15 +12,15 @@ func configureHandlers(r mux.RouteFactory) {
 
 		rg.Group("/items", func(rg mux.RouteFactory) {
 
-			rg.Get("/", mux.NewInlineHandler(itemController.List))
+			rg.Get("/", itemController.List)
 
 			rg.Group("/([A-Za-z-]+)", func(rg mux.RouteFactory) {
 
-				rg.Get("/", mux.NewInlineHandler(itemController.Show))
+				rg.Get("/", itemController.Show)
 
-				rg.Post("/", mux.NewInlineHandler(itemController.Save))
+				rg.Post("/", itemController.Save)
 
-				rg.Delete("/", mux.NewInlineHandler((itemController.Delete)))
+				rg.Delete("/", itemController.Delete)
 
 			})
 

@@ -26,30 +26,30 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, request *http.Request) {
 	http.NotFound(w, request)
 }
 
-func (r *Router) newRoute(method, path string, handler Handler) *Route {
-	route := NewRoute(method, path, handler)
+func (r *Router) newRoute(method, path string, handler HandlerFunc) *Route {
+	route := NewRoute(method, path, NewInlineHandler(handler))
 	r.routes = append(r.routes, route)
 
 	return route
 }
 
 // Get creates a new MethodGet Route using the group attributes.
-func (r *Router) Get(path string, handler Handler) *Route {
+func (r *Router) Get(path string, handler HandlerFunc) *Route {
 	return r.newRoute(MethodGet, path, handler)
 }
 
 // Post creates a new MethodPost Route using the group attributes
-func (r *Router) Post(path string, handler Handler) *Route {
+func (r *Router) Post(path string, handler HandlerFunc) *Route {
 	return r.newRoute(MethodPost, path, handler)
 }
 
 // Put creates a new MethodPut Route using the group attributes
-func (r *Router) Put(path string, handler Handler) *Route {
+func (r *Router) Put(path string, handler HandlerFunc) *Route {
 	return r.newRoute(MethodPut, path, handler)
 }
 
 // Delete creates a new MethodDelete Route using the group attributes
-func (r *Router) Delete(path string, handler Handler) *Route {
+func (r *Router) Delete(path string, handler HandlerFunc) *Route {
 	return r.newRoute(MethodDelete, path, handler)
 }
 

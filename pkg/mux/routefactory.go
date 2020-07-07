@@ -6,13 +6,13 @@ type RouteFactoryFunc func(RouteFactory)
 
 // RouteFactory creates routes.
 type RouteFactory interface {
-	Get(string, Handler) *Route
+	Get(string, HandlerFunc) *Route
 
-	Post(string, Handler) *Route
+	Post(string, HandlerFunc) *Route
 
-	Put(string, Handler) *Route
+	Put(string, HandlerFunc) *Route
 
-	Delete(string, Handler) *Route
+	Delete(string, HandlerFunc) *Route
 
 	Group(string, RouteFactoryFunc) RouteFactory
 }

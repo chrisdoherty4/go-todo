@@ -25,7 +25,7 @@ func (g *RouteGroup) SetPathPrefix(prefix string) {
 }
 
 // NewRoute creates a new Route instance using the group attributes.
-func (g *RouteGroup) newRoute(method, path string, handler Handler) *Route {
+func (g *RouteGroup) newRoute(method, path string, handler HandlerFunc) *Route {
 	path = fmt.Sprintf("%v/%v", g.pathPrefix, path)
 
 	multiSlashRegex := regexp.MustCompile("/{2,}")
@@ -40,22 +40,22 @@ func (g RouteGroup) Clone() *RouteGroup {
 }
 
 // Get creates a new MethodGet Route using the group attributes.
-func (g *RouteGroup) Get(path string, handler Handler) *Route {
+func (g *RouteGroup) Get(path string, handler HandlerFunc) *Route {
 	return g.newRoute(MethodGet, path, handler)
 }
 
 // Post creates a new MethodPost Route using the group attributes
-func (g *RouteGroup) Post(path string, handler Handler) *Route {
+func (g *RouteGroup) Post(path string, handler HandlerFunc) *Route {
 	return g.newRoute(MethodPost, path, handler)
 }
 
 // Put creates a new MethodPut Route using the group attributes
-func (g *RouteGroup) Put(path string, handler Handler) *Route {
+func (g *RouteGroup) Put(path string, handler HandlerFunc) *Route {
 	return g.newRoute(MethodPut, path, handler)
 }
 
 // Delete creates a new MethodDelete Route using the group attributes
-func (g *RouteGroup) Delete(path string, handler Handler) *Route {
+func (g *RouteGroup) Delete(path string, handler HandlerFunc) *Route {
 	return g.newRoute(MethodDelete, path, handler)
 }
 

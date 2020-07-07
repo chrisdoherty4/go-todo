@@ -15,12 +15,13 @@ func TestServeingRequests(t *testing.T) {
 
 	r := mux.NewRouter()
 
-	r.Get("/example", mux.NewInlineHandler(
+	r.Get(
+		"/example",
 		func(w http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
 			t.Log("Received request for /example")
 			w.Write([]byte(expected))
 		},
-	))
+	)
 
 	request, err := http.NewRequest(http.MethodGet, "/example", nil)
 	if err != nil {

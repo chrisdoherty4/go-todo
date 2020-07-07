@@ -21,9 +21,10 @@ func TestGroupWithSlashPrefix(t *testing.T) {
 	var expected *mux.Route
 
 	g.Group("/", func(rf mux.RouteFactory) {
-		expected = rf.Get("/example", mux.NewInlineHandler(
+		expected = rf.Get(
+			"/example",
 			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {},
-		))
+		)
 	})
 
 	assert.Equal(t, 1, r.Count())
@@ -46,9 +47,10 @@ func TestGroupWithWordPrefix(t *testing.T) {
 	var expected *mux.Route
 
 	g.Group("/example", func(rf mux.RouteFactory) {
-		expected = rf.Get("/", mux.NewInlineHandler(
+		expected = rf.Get(
+			"/",
 			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {},
-		))
+		)
 	})
 
 	assert.Equal(t, 1, r.Count())
@@ -72,17 +74,19 @@ func TestGroupWithSimilarPaths(t *testing.T) {
 
 	g.Group("/example", func(rf mux.RouteFactory) {
 
-		rf.Get("/", mux.NewInlineHandler(
+		rf.Get(
+			"/",
 			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
 				t.Log("Received request for /example")
 			},
-		))
+		)
 
-		expected = rf.Get("/([A-Za-z-]+)", mux.NewInlineHandler(
+		expected = rf.Get(
+			"/([A-Za-z-]+)",
 			func(_ http.ResponseWriter, _ *http.Request, _ *mux.RouteMatch) {
 				t.Log("Received request for /example/([A-Za-z-])")
 			},
-		))
+		)
 
 	})
 
@@ -105,11 +109,12 @@ func TestRequestPathWithTrailingSlash(t *testing.T) {
 	r := mux.NewRouter()
 	g := mux.NewRouteGroup("/", r)
 
-	expected := g.Get("/example", mux.NewInlineHandler(
+	expected := g.Get(
+		"/example",
 		func(w http.ResponseWriter, r *http.Request, _ *mux.RouteMatch) {
 			t.Log("Received request for /example")
 		},
-	))
+	)
 
 	request, err := http.NewRequest(http.MethodGet, "/example/", nil)
 	if err != nil {
