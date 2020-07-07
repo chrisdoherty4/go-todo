@@ -1,17 +1,21 @@
 
 PKG_PATH := ./cmd/rememberme
 BIN_NAME := rememberme
+BIN_PATH := $(PWD)/$(BIN_NAME)
 
-all:
-	@go build -o $(BIN_NAME) $(PKG_PATH)
+all: test build
+
+.PHONY: build
+build:
+	@go build -o $(BIN_PATH) $(PKG_PATH)
 
 .PHONY: clean
 clean: 
-	@rm -f $(APP_NAME)
+	@rm -f $(BIN_PATH)
 
 .PHONY: serve
 serve:
-	@$(PWD)/$(APP_NAME)
+	@$(BIN_PATH)
 
 .PHONY: test
 test:

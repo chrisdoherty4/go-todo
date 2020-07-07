@@ -24,14 +24,22 @@ func TestSavingAnItem(t *testing.T) {
 	repo := repo.NewMemoryRepository()
 
 	repo.Save(item)
-	retrieved := repo.Get(title)
+	retrieved, err := repo.Get(title)
+
+	if err != nil {
+		t.Fail()
+	}
 
 	assert.Equal(t, item.Title(), retrieved.Title(), "Titles should be the same")
 
 	description := "Walk the dog around the block"
 	retrieved.SetDescription(description)
-	repo.Save(retrieved)
-	retrieved = repo.Get(title)
+	repo.Save(&retrieved)
+	retrieved, err = repo.Get(title)
+
+	if err != nil {
+		t.Fail()
+	}
 
 	assert.Equal(
 		t,
@@ -78,7 +86,11 @@ func TestGettingItem(t *testing.T) {
 
 	repo.Save(item)
 
-	retrieved := repo.Get(title)
+	retrieved, err := repo.Get(title)
+
+	if err != nil {
+		t.Fail()
+	}
 
 	assert.Equal(
 		t,

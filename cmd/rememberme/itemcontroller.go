@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"encoding/json"
@@ -94,6 +94,28 @@ func (ic *ItemController) Save(w http.ResponseWriter, r *http.Request, rm *mux.R
 
 	ic.repo.Save(&item)
 	io.WriteString(w, "Success")
+}
+
+// Delete deletes an item from the item repository.
+func (ic *ItemController) Delete(w http.ResponseWriter, r *http.Request, rm *mux.RouteMatch) {
+	title, _ := rm.Var(0)
+	item, err := ic.repo.Delete(title)
+
+	if err != nil {
+		log.Printf("Failed deleting item: \n %v", err.Error())
+		ServerError(w, r)
+		return
+	}
+
+	marshalledItem, err := json.MarshalIndent(item, "", "  ")
+
+	if err != nil {
+		log.Printf("Failed json marshalling: \n %v", err.Error())
+		ServerError(w, r)
+		return
+	}
+
+	w.Write(marshalledItem)
 }
 
 // NewItemController creates a new ItemController instance.

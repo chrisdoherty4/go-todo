@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/chrisdoherty4/rememberme/cmd/rememberme/handler"
 	"github.com/chrisdoherty4/rememberme/pkg/mux"
 )
 
-var itemController = handler.NewItemController(store)
+var itemController = NewItemController(store)
 
 func configureHandlers(r mux.RouteFactory) {
 
@@ -20,6 +19,8 @@ func configureHandlers(r mux.RouteFactory) {
 				rg.Get("/", mux.NewInlineHandler(itemController.Show))
 
 				rg.Post("/", mux.NewInlineHandler(itemController.Save))
+
+				rg.Delete("/", mux.NewInlineHandler((itemController.Delete)))
 
 			})
 
